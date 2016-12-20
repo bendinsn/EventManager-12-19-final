@@ -1,0 +1,55 @@
+﻿@model NewEventViewModel
+@{ 
+    ViewData["Title"] = "Register New Event";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form asp-controller="Home" asp-action="NewEvent" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="EventName" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="EventName" class="form-control" />
+            <span asp-validation-for="EventName" class="text-danger"></span>
+        </div>
+    </div>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Time" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Time" class="form-control" type='text' />
+            <span asp-validation-for="Time" class="text-danger"></span>
+        </div>
+    </div>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Venue" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Venue" class="form-control" />
+            <span asp-validation-for="Venue" class="text-danger"></span>
+        </div>
+    </div>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="GenreID" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select name="GenreID">
+                @foreach (Genre genre in ViewBag.Genres)
+                {
+                    <option value=@genre.GenreID>@genre.GenreName</option>
+                }
+            </select>
+        </div>
+        <span asp-validation-for="GenreID"></span><br />
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Register</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

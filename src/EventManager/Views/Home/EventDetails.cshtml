@@ -1,0 +1,54 @@
+﻿@model Event
+@{ 
+    ViewData["Title"] = "Event Details";
+    Event e = ViewBag.Event;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p><b>Event Name: </b>@e.EventName</p>
+<p><b>Artist: </b>@e.Artist.ClientName</p>
+<p><b>Date and Time: </b>@e.Time</p>
+<p><b>Genre: </b>@e.Genre.GenreName</p>
+<p><b>Venue: </b>@e.Venue</p>
+
+@if (ViewBag.isYours)
+{
+    <a asp-action="DeleteEvent" asp-controller="Home" class="btn btn-danger" asp-route-id=@e.EventID>DELETE</a>
+    <a asp-action="EditEvent" asp-controller="Home" class="btn btn-success" asp-route-id=@e.EventID>EDIT</a>
+}
+@{bool isInCalendar = false; bool isFollowing = false; }
+@foreach (UserCalendar c in ViewBag.calendars)
+{
+    if (c.EventID == e.EventID)
+    {
+        <form asp-action="RemoveFromCalendar" asp-controller="Home" asp-route-id=@e.EventID asp-route-returnurl="@ViewData["ReturnUrl"]">
+            <input type="submit" value="Remove From Your Calendar" class="btn btn-default" />
+        </form>
+        isInCalendar = true;
+        break;
+    }
+}
+@foreach (Follow f in ViewBag.follows)
+{
+    if (f.ArtistID == e.Artist.UserName && f.FollowerID == ViewBag.user.UserName)
+    {
+        <form asp-action="Unfollow" asp-controller="Home" asp-route-id=@e.EventID asp-route-returnurl="@ViewData["ReturnUrl"]">
+            <input type="submit" value="Unfollow This Artist" class="btn btn-default" />
+        </form>
+        isFollowing = true;
+        break;
+    }
+}
+@if (!isInCalendar)
+{
+    <form asp-action="AddToCalendar" asp-controller="Home" asp-route-id=@e.EventID asp-route-returnurl="@ViewData["ReturnUrl"]">
+        <input type="submit" value="Add To Your Calendar" class="btn btn-default" />
+    </form>
+}
+@if (!isFollowing)
+{
+    <form asp-action="FollowArtist" asp-controller="Home" asp-route-id=@e.EventID asp-route-returnurl="@ViewData["ReturnUrl"]">
+        <input type="submit" value="Follow This Artist" class="btn btn-default" />
+    </form>
+}

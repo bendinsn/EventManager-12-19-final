@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "Artists You're Following";
+}
+<h2>@ViewData["Title"].</h2>
+
+<table>
+    <thead>
+    <th>Artist</th>
+    </thead>
+    @foreach (ApplicationUser a in ViewBag.followedArtists)
+    {
+        <tr>
+        <td>
+            @a.ClientName
+        </td>
+        </tr>
+    }
+</table>
+
+
+
+
+<a asp-action="SearchByUser" asp-controller="Home" class="btn btn-success">Search By Artist</a>

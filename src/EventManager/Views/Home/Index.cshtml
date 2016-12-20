@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (ViewData["msg"] != null)
+{
+    <p>@ViewData["msg"]</p>
+}
+
+@if (ViewBag.Notification != null)
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h2 font-color=@ViewBag.Color>@ViewBag.Notification</h2>
+        </div>
+    </div>
+}
+
+<h2>This page isn't used for much of anything right now.</h2><br />
+<h2>If you're logged in, check your control panel by clicking your email in the top-right!</h2><br />
+<h2>If not, consider either logging in or registering if you don't have an account yet.</h2><br />

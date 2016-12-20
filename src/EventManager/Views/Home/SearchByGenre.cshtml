@@ -1,0 +1,25 @@
+﻿@model SearchByGenreViewModel
+
+
+
+<h1>Search Events By Genre:</h1><br />
+<form asp-controller="Home" asp-action="SubmitGenreSearch" asp-route-returnurl="@ViewData["ReturnUrl"]" class="form-horizontal">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="ID" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <select asp-for="ID" class="form-control" id="genreInput">
+                @foreach (Genre genre in ViewBag.Genres)
+                {
+                    <option value=@genre.GenreID>@genre.GenreName</option>
+                }
+            </select>
+            <span asp-validation-for="ID" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Search" />
+        </div>
+    </div>
+</form>

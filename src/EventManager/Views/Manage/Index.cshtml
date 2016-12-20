@@ -1,0 +1,87 @@
+﻿@model IndexViewModel
+@using EventManager.Models
+@{
+    ViewData["Title"] = "Manage your account";
+    ApplicationUser user = ViewBag.user;
+}
+
+<h2>@ViewData["Title"].</h2>
+<p class="text-success">@ViewData["StatusMessage"]</p>
+
+<div>
+    @if(Model.IsArtist) { <h6>You are registered as an artist.</h6> }
+
+    <h4>Change your account settings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Password:</dt>
+        <dd>
+            @if (Model.HasPassword)
+            {
+                <a asp-controller="Manage" asp-action="ChangePassword" class="btn-bracketed">Change</a>
+            }
+            else
+            {
+                <a asp-controller="Manage" asp-action="SetPassword" class="btn-bracketed">Create</a>
+            }
+        </dd>
+        <dt>External Logins:</dt>
+        <dd>
+            @Model.Logins.Count <a asp-controller="Manage" asp-action="ManageLogins" class="btn btn-bracketed">Manage</a>
+        </dd>
+        <dt>Phone Number:</dt>
+        <dd>
+            <p>
+                Phone Numbers can used as a second factor of verification in two-factor authentication.
+                See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
+                for details on setting up this ASP.NET application to support two-factor authentication using SMS.
+            </p>
+            @*@(Model.PhoneNumber ?? "None")
+                @if (Model.PhoneNumber != null)
+                {
+                    <br />
+                    <a asp-controller="Manage" asp-action="AddPhoneNumber" class="btn-bracketed">Change</a>
+                    <form asp-controller="Manage" asp-action="RemovePhoneNumber" method="post">
+                        [<button type="submit" class="btn-link">Remove</button>]
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Manage" asp-action="AddPhoneNumber" class="btn-bracketed">Add</a>
+                }*@
+        </dd>
+        <dt>Two-Factor Authentication:</dt>
+        <dd>
+            <p>
+                There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
+                for setting up this application to support two-factor authentication.
+            </p>
+            @*@if (Model.TwoFactor)
+                {
+                    <form asp-controller="Manage" asp-action="DisableTwoFactorAuthentication" method="post" class="form-horizontal">
+                        Enabled <button type="submit" class="btn-link btn-bracketed">Disable</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="Manage" asp-action="EnableTwoFactorAuthentication" method="post" class="form-horizontal">
+                        <button type="submit" class="btn-link btn-bracketed">Enable</button> Disabled
+                    </form>
+                }*@
+        </dd>
+
+        <dt>My Events</dt>
+        <dd>
+            @if (Model.IsArtist)
+            {
+                <p><a asp-controller="Home" asp-action="NewEvent">Create New Event</a></p>
+                <p><a asp-controller="Home" asp-action="EventListByArtist" asp-route-id="@user.ClientName">Events You're Running</a></p>
+
+            }
+            <p><a asp-controller="Home" asp-action="MyCalendar">View Your Calendar</a></p>
+            <p><a asp-controller="Home" asp-action="ViewFollowedArtists">View Followed Artists</a></p>
+            <p><a asp-controller="Home" asp-action="MyEventFeed">View Event Feed</a></p>
+
+        </dd>
+    </dl>
+</div>

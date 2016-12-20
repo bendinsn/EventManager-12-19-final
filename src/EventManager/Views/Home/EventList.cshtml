@@ -1,0 +1,138 @@
+﻿@model IEnumerable<EventManager.Models.Event>
+
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Upcoming Events";
+}
+<h2>@ViewData["Title"].</h2>
+<h4>Click event title for detail view.</h4>
+
+<table>
+    <thead>
+    <th>Event Title</th>
+    <th>Artist</th>
+    <th>Genre</th>
+    <th>Date and Time</th>
+    <th>Venue</th>
+    </thead>
+    @foreach (var anEvent in Model)
+    {
+        if (ViewBag.ID != null)
+        {
+            if (ViewBag.ID == anEvent.Artist.ClientName && anEvent.Time >= DateTime.Now)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="EventDetails" asp-controller="Home" asp-route-id=@anEvent.EventID>@anEvent.EventName</a>
+                    </td>
+                    <td>
+                        @anEvent.Artist.ClientName
+                    </td>
+                    <td>
+                        @anEvent.Genre.GenreName
+                    </td>
+                    <td>
+                        @anEvent.Time
+                    </td>
+                    <td>
+                        @anEvent.Venue
+                    </td>
+                </tr>
+            }
+        }
+        else if (ViewBag.calendarView == true)
+        { 
+            if (ViewBag.EventIDs.Contains(anEvent.EventID) && anEvent.Time >= DateTime.Now)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="EventDetails" asp-controller="Home" asp-route-id=@anEvent.EventID>@anEvent.EventName</a>
+                    </td>
+                    <td>
+                        @anEvent.Artist.ClientName
+                    </td>
+                    <td>
+                        @anEvent.Genre.GenreName
+                    </td>
+                    <td>
+                        @anEvent.Time
+                    </td>
+                    <td>
+                        @anEvent.Venue
+                    </td>
+                </tr>
+            }
+        }
+        else if (ViewBag.followView == true && anEvent.Time >= DateTime.Now)
+        {
+            <tr>
+                <td>
+                    <a asp-action="EventDetails" asp-controller="Home" asp-route-id=@anEvent.EventID>@anEvent.EventName</a>
+                </td>
+                <td>
+                    @anEvent.Artist.ClientName
+                </td>
+                <td>
+                    @anEvent.Genre.GenreName
+                </td>
+                <td>
+                    @anEvent.Time
+                </td>
+                <td>
+                    @anEvent.Venue
+                </td>
+            </tr>
+        }
+        else if (ViewBag.VenueView == true && anEvent.Time >= DateTime.Now)
+        {
+            if (anEvent.Venue == ViewBag.VenueID)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="EventDetails" asp-controller="Home" asp-route-id=@anEvent.EventID>@anEvent.EventName</a>
+                    </td>
+                    <td>
+                        @anEvent.Artist.ClientName
+                    </td>
+                    <td>
+                        @anEvent.Genre.GenreName
+                    </td>
+                    <td>
+                        @anEvent.Time
+                    </td>
+                    <td>
+                        @anEvent.Venue
+                    </td>
+                </tr>
+            }
+        }
+        else if (anEvent.Time >= DateTime.Now)
+        {
+            <tr>
+                <td>
+                    <a asp-action="EventDetails" asp-controller="Home" asp-route-id=@anEvent.EventID>@anEvent.EventName</a>
+                </td>
+                <td>
+                    @anEvent.Artist.ClientName
+                </td>
+                <td>
+                    @anEvent.Genre.GenreName
+                </td>
+                <td>
+                    @anEvent.Time
+                </td>
+                <td>
+                    @anEvent.Venue
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+
+
+
+<a asp-action="SearchByUser" asp-controller="Home" class="btn btn-success">Search By Artist</a>
+<a asp-action="SearchByGenre" asp-controller="Home" class="btn btn-success">Search By Genre</a>
+<a asp-action="SearchByVenue" asp-controller="Home" class="btn btn-success">Search By Venue</a>

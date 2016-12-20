@@ -1,0 +1,18 @@
+﻿@model Event
+@{ 
+    Event e = ViewBag.Event;
+}
+
+<h1>DELETE EVENT</h1>
+<h2>@e.EventName</h2>
+
+<p>Are you sure you want to delete this event?</p>
+@if(ViewBag.isYours)
+{
+<a asp-action="deleteConfirmed" asp-controller="Home" class="btn btn-danger" asp-route-id=@e.EventID>DELETE</a>
+}
+else
+{
+    <a class="btn btn-danger">You do not have access to delete this event.</a>
+}
+<a asp-action="EventList" asp-controller="Home" class="btn btn-default">Back to list</a><br /><br />

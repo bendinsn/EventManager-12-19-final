@@ -1,0 +1,13 @@
+﻿@using EventManager.Models
+@model Genre
+
+<!-- REMOVE LINKS TO THIS PAGE IN PRODUCTION; NOT MEANT FOR END USERS-->
+<h2>Add Genre</h2>
+
+<form action="AddGenre" method="post">
+    Name: <input type="text" name="GenreName" value="" autofocus /><br />
+    <span asp-validation-for="GenreName" class="text-danger"></span>
+    <input type="submit" value="Submit" />
+</form>
+
+<!--Caused by the data annotations in the Genre object; why doesn't it validate user-side at all?-->
