@@ -25,8 +25,11 @@ namespace EventManager.Controllers
 
         public IActionResult Index()
         {
-            
-            return View();
+            var events = context.Events.ToList().OrderBy(x => x.Time);
+            ViewBag.genres = context.Genres.ToList();
+            ViewBag.artists = context.Artists.ToList();
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            return View("EventList", events);
         }
 
         public IActionResult About()
@@ -62,7 +65,11 @@ namespace EventManager.Controllers
             genres.Add(g);
             context.SaveChanges();
             var genres2 = context.Genres.ToList();
-            return View("Index");
+            ViewBag.genres = context.Genres.ToList();
+            ViewBag.artists = context.Artists.ToList();
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            var events = context.Events.ToList().OrderBy(x => x.Time);
+            return View("EventList", events);
         }
 
         [HttpGet]
@@ -106,7 +113,8 @@ namespace EventManager.Controllers
                 ViewBag.Notification = "Something went wrong — Event not added.";
                 ViewBag.Color = "Red";
             }
-            return View("Index");
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            return RedirectToAction("EventList");
         }
 
         public IActionResult EventList()
@@ -114,6 +122,7 @@ namespace EventManager.Controllers
             var events = context.Events.ToList().OrderBy(x => x.Time);
             ViewBag.genres = context.Genres.ToList();
             ViewBag.artists = context.Artists.ToList();
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return View(events);
         }
 
@@ -123,6 +132,7 @@ namespace EventManager.Controllers
             ViewBag.genres = context.Genres.ToList();
             ViewBag.artists = context.Artists.ToList();
             ViewBag.ID = ID;
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return View("EventList", events);
         }
 
@@ -136,6 +146,7 @@ namespace EventManager.Controllers
             var events = context.Events.Where(x => x.GenreID == ID).OrderBy(x => x.Time);
             ViewBag.genres = context.Genres.ToList();
             ViewBag.artists = context.Artists.ToList();
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return View("EventList", events);
         }
 
@@ -152,6 +163,7 @@ namespace EventManager.Controllers
             ViewBag.artists = context.Artists.ToList();
             ViewBag.VenueID = ID;
             ViewBag.VenueView = true;
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return View("EventList", events);
         }
 
@@ -219,6 +231,7 @@ namespace EventManager.Controllers
             Event e = context.Events.Where(x => x.EventID == ID).Include(x => x.Artist).Include(x => x.Genre).FirstOrDefault();
             context.Events.Remove(e);
             context.SaveChanges();
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User);
             return RedirectToAction("EventList");
         }
 
@@ -261,6 +274,7 @@ namespace EventManager.Controllers
             }
             context.SaveChanges();
 
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return RedirectToAction("EventList");
         }
 
@@ -277,7 +291,8 @@ namespace EventManager.Controllers
             };
             calendars.Add(c);
             context.SaveChanges();
-            return View("Index");
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            return RedirectToAction("EventList");
         }
 
         [HttpPost]
@@ -290,7 +305,8 @@ namespace EventManager.Controllers
             UserCalendar c = calendars.FirstOrDefault(x => x.EventID == ID && x.UserID == user.UserName);
             calendars.Remove(c);
             context.SaveChanges();
-            return View("Index");
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            return RedirectToAction("EventList");
         }
 
         public IActionResult MyCalendar(string ID)
@@ -302,6 +318,7 @@ namespace EventManager.Controllers
             ViewBag.genres = context.Genres.ToList();
             ViewBag.artists = context.Artists.ToList();
             var events = context.Events.ToList().OrderBy(x => x.Time);
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return View("EventList", events);
         }
 
@@ -321,7 +338,23 @@ namespace EventManager.Controllers
             };
             follows.Add(f);
             context.SaveChanges();
-            return View("Index");
+            var events2 = context.Events.ToList().OrderBy(x => x.Time);
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            foreach (Event e in events)
+            {
+                foreach (Genre g in context.Genres)
+                {
+                    if (g.GenreID == e.GenreID) { e.Genre = g; }
+                }
+            }
+            foreach (Event e in events)
+            {
+                foreach (ApplicationUser a in context.Artists)
+                {
+                    if (a.Id == e.ArtistID) { e.Artist = a; }
+                }
+            }
+            return View("EventList", events2);
         }
 
         public ApplicationUser GetArtistByID(string ID)
@@ -334,14 +367,30 @@ namespace EventManager.Controllers
         public IActionResult Unfollow(int ID)
         {
             var user = userManager.GetUserAsync(HttpContext.User).Result;
-            var events = context.Events.ToList();
+            var events = context.Events.ToList().OrderBy(x => x.Time);
             Event _e = events.FirstOrDefault(x => x.EventID == ID);
+            _e.Artist = context.Artists.FirstOrDefault(x => x.Id == _e.ArtistID);
             string artist = _e.Artist.UserName;
             var follows = context.Follows;
             Follow f = follows.FirstOrDefault(x => x.ArtistID == artist && x.FollowerID == user.UserName);
             follows.Remove(f);
             context.SaveChanges();
-            return View("Index");
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
+            foreach (Event e in events)
+            {
+                foreach (Genre g in context.Genres)
+                {
+                    if (g.GenreID == e.GenreID) { e.Genre = g; }
+                }
+            }
+            foreach (Event e in events)
+            {
+                foreach (ApplicationUser a in context.Artists)
+                {
+                    if (a.Id == e.ArtistID) { e.Artist = a; }
+                }
+            }
+            return View("EventList", events);
         }
 
         public IActionResult ViewFollowedArtists()
@@ -384,6 +433,7 @@ namespace EventManager.Controllers
             ViewBag.followView = true;
             ViewBag.genres = context.Genres.ToList();
             ViewBag.artists = context.Artists.ToList();
+            ViewBag.user = userManager.GetUserAsync(HttpContext.User).Result;
             return View("EventList", eventList);
         }
     }

@@ -20,7 +20,7 @@
 @{bool isInCalendar = false; bool isFollowing = false; }
 @foreach (UserCalendar c in ViewBag.calendars)
 {
-    if (c.EventID == e.EventID)
+    if (c.EventID == e.EventID && c.UserID == ViewBag.user.UserName)
     {
         <form asp-action="RemoveFromCalendar" asp-controller="Home" asp-route-id=@e.EventID asp-route-returnurl="@ViewData["ReturnUrl"]">
             <input type="submit" value="Remove From Your Calendar" class="btn btn-default" />

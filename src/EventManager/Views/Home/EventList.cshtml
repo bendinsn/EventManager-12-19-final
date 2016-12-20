@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = "Upcoming Events";
 }
-<h2>@ViewData["Title"].</h2>
+<h2>@ViewData["Title"]</h2>
 <h4>Click event title for detail view.</h4>
 
 <table>
@@ -136,3 +136,17 @@
 <a asp-action="SearchByUser" asp-controller="Home" class="btn btn-success">Search By Artist</a>
 <a asp-action="SearchByGenre" asp-controller="Home" class="btn btn-success">Search By Genre</a>
 <a asp-action="SearchByVenue" asp-controller="Home" class="btn btn-success">Search By Venue</a>
+@if (ViewBag.user != null)
+{
+<br />
+<a asp-action="MyCalendar" asp-controller="Home" class="btn btn-default">View Your Calendar</a>
+<a asp-action="ViewFollowedArtists" asp-controller="Home" class="btn btn-default">View Followed Artists</a>
+<a asp-action="MyEventFeed" asp-controller="Home" class="btn btn-default">View Events by Followed Artists</a>
+    if (ViewBag.user.IsArtist)
+    {
+        <br />
+        <a asp-action="NewEvent" asp-controller="Home" class="btn btn-default">Create New Event</a>
+        <a asp-action="EventListByArtist" asp-controller="Home" asp-route-id="@ViewBag.user.ClientName" class="btn btn-default">Events You're Running</a>
+
+    }
+}
